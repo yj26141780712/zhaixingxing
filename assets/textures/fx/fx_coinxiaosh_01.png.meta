@@ -36,29 +36,6 @@
       "id": "",
       "name": ""
     },
-    "6c48a": {
-      "importer": "texture",
-      "uuid": "95e8f80f-c673-41f0-a95f-b2086073abaa@6c48a",
-      "displayName": "fx_coinxiaosh_01",
-      "id": "6c48a",
-      "name": "texture",
-      "userData": {
-        "wrapModeS": "clamp-to-edge",
-        "wrapModeT": "clamp-to-edge",
-        "minfilter": "linear",
-        "magfilter": "linear",
-        "mipfilter": "none",
-        "anisotropy": 0,
-        "isUuid": true,
-        "imageUuidOrDatabaseUri": "95e8f80f-c673-41f0-a95f-b2086073abaa"
-      },
-      "ver": "1.0.21",
-      "imported": true,
-      "files": [
-        ".json"
-      ],
-      "subMetas": {}
-    },
     "f9941": {
       "importer": "sprite-frame",
       "uuid": "95e8f80f-c673-41f0-a95f-b2086073abaa@f9941",
@@ -87,6 +64,29 @@
         "atlasUuid": ""
       },
       "ver": "1.0.9",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "6c48a": {
+      "importer": "texture",
+      "uuid": "95e8f80f-c673-41f0-a95f-b2086073abaa@6c48a",
+      "displayName": "fx_coinxiaosh_01",
+      "id": "6c48a",
+      "name": "texture",
+      "userData": {
+        "wrapModeS": "clamp-to-edge",
+        "wrapModeT": "clamp-to-edge",
+        "minfilter": "linear",
+        "magfilter": "linear",
+        "mipfilter": "none",
+        "anisotropy": 0,
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "95e8f80f-c673-41f0-a95f-b2086073abaa"
+      },
+      "ver": "1.0.21",
       "imported": true,
       "files": [
         ".json"
