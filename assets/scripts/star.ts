@@ -13,7 +13,7 @@ const { ccclass, property } = _decorator;
  * ManualUrl = https://docs.cocos.com/creator/3.4/manual/zh/
  *
  */
- 
+
 @ccclass('star')
 export class star extends Component {
     // [1]
@@ -23,8 +23,14 @@ export class star extends Component {
     // @property
     // serializableDummy = 0;
 
-    start () {
+    start() {
         // [3]
+    }
+
+    init(game: any) {
+        // this.game = game;
+        // this.enabled = true;
+        // this.node.opacity = 255;
     }
 
     // update (deltaTime: number) {

@@ -59,7 +59,6 @@ export class Game extends Component {
         this.enabled = false;
         this.infoControl.string = sys.isMobile ?
             '点击左半屏幕：向左加速\n点击右半屏幕：向右加速' : 'A：向左加速\nD：向右加速';
-
         this.starPool = new NodePool();
     }
 
@@ -84,7 +83,7 @@ export class Game extends Component {
         // 为星星设置一个随机位置
         newStar.setPosition(this.getNewStarPosition());
         // pass Game instance to star
-        newStar.getComponent('Star').init(this);
+        newStar.getComponent('star').init(this);
         // start star timer and store star reference
         this.startTimer();
         this.currentStar = newStar;
