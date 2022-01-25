@@ -86,6 +86,7 @@ export class joyStick extends Component {
         }
         // 虚拟摇杆移动的矩阵
         const dir = new Vec3().add(this.dir);
+        console.log(dir);
         let dis = dir.multiplyScalar(this.maxSpeed * Math.min(1, ratio));
         const playerP = this.player.position.add(dis);
         if (playerP.x > this.width / 2) {
