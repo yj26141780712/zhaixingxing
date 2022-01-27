@@ -35,6 +35,7 @@ export class head extends Component {
     snakeArray: Node[] = [];
     snakeColor: Color;
     dir: Vec3;
+    speed: number;
 
     start() {
         // [3]
@@ -48,6 +49,7 @@ export class head extends Component {
             this.getNewBody();
         }
         this.dir = null;
+        this.speed = this.sectionLength / 5;
     }
 
     randomColor() {
@@ -76,8 +78,8 @@ export class head extends Component {
         this.node.setRotationFromEuler(new Vec3(0, 0, degree - 90));
     }
 
-    moveSnake(){
-        const posV = new Vec3().add(this.dir).multiplyScalar(this.sectionLength/5);
+    moveSnake() {
+        const posV = new Vec3().add(this.dir).multiplyScalar();
         this.node.setPosition(this.node.getPosition().add(posV));
     }
 
@@ -98,6 +100,12 @@ export class head extends Component {
         sprite.color = this.snakeColor;
         this.node.parent.addChild(bodyNode);
         this.snakeArray.push(bodyNode);
+    }
+
+    recordPoints() {
+        let len = 0;
+        let index = 0;
+
     }
 
     update(deltaTime: number) {
