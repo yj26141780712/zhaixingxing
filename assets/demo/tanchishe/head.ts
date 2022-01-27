@@ -1,5 +1,5 @@
 
-import { _decorator, Component, Node, UITransform, Sprite, math, color, Vec3, Prefab, instantiate, Color, Vec2 } from 'cc';
+import { _decorator, Component, Node, UITransform, Sprite, math, color, Vec3, Prefab, instantiate, Color, Vec2, macro, UI, Collider2D, Contact2DType, IPhysics2DContact } from 'cc';
 const { ccclass, property } = _decorator;
 
 /**
@@ -32,13 +32,20 @@ export class head extends Component {
     @property()
     public sectionLength = 25;
 
+    @property(Prefab)
+    public foodPrefab: Prefab;
+
     snakeArray: Node[] = [];
     snakeColor: Color;
     dir: Vec3;
     speed: number;
-
+    //蛇身所有的点
+    pointsArray: Vec3[] = [];
+    //蛇头走过的点的数量
+    headPointsNum = 0;
     start() {
         // [3]
+        this.speed = this.sectionLength / 5;
         this.snakeArray.push(this.node);
         const sprite = this.node.getComponent(Sprite);
         this.snakeColor = this.randomColor();
@@ -49,7 +56,19 @@ export class head extends Component {
             this.getNewBody();
         }
         this.dir = null;
-        this.speed = this.sectionLength / 5;
+        let collider = this.getComponent(Collider2D);
+        if (collider) {
+            collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
+        }
+        let newFood = instantiate(this.foodPrefab);
+        this.node.parent.addChild(newFood);
+    }
+
+    onBeginContact(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
+        otherCollider.node.removeFromParent();
+        let newFood = instantiate(this.foodPrefab);
+        this.node.parent.addChild(newFood);
+        this.getNewBody();
     }
 
     randomColor() {
@@ -79,12 +98,26 @@ export class head extends Component {
     }
 
     moveSnake() {
-        const posV = new Vec3().add(this.dir).multiplyScalar();
+        const posV = new Vec3().add(this.dir).multiplyScalar(this.speed);
         this.node.setPosition(this.node.getPosition().add(posV));
+        this.pointsArray.push(this.node.getPosition());
+        this.headPointsNum += 1;
+        console.log(this.pointsArray.length, this.headPointsNum);
+        for (let i = 1; i < this.snakeArray.length; i++) {
+            let num = Math.floor((this.pointsArray.length - this.headPointsNum) / (this.snakeArray.length - 1) * (this.snakeArray.length - 1 - i));
+            this.snakeArray[i].setPosition(this.pointsArray[num + this.snakeArray[i].curIndex]);
+            (this.snakeArray[i] as any).curIndex += 1;
+        }
     }
 
     getNewBody() {
         const bodyNode = instantiate(this.bodyPrefab);
+        (bodyNode as any).curIndex = 0;
+        if (this.snakeArray.length > this.bodyNum) {
+            bodyNode.curIndex = this.snakeArray[this.snakeArray.length - 1].curIndex;
+        } else {
+            bodyNode.curIndex = 0;
+        }
         if (this.snakeArray.length === 1) { // 只有蛇头
             const dir = this.node.getPosition().normalize();
             const newPos = this.node.getPosition().subtract(dir.multiplyScalar(this.sectionLength));
@@ -100,12 +133,29 @@ export class head extends Component {
         sprite.color = this.snakeColor;
         this.node.parent.addChild(bodyNode);
         this.snakeArray.push(bodyNode);
+        this.recordPoints();
+        this.changeZIndex();
     }
 
     recordPoints() {
         let len = 0;
         let index = 0;
+        while (len < this.sectionLength) {
+            len += this.speed;
+            let lastNode = this.snakeArray[this.snakeArray.length - 1];
+            let lastLastNode = this.snakeArray[this.snakeArray.length - 2];
+            let dir = lastNode.getPosition().subtract(lastLastNode.getPosition()).normalize();
+            let pos = lastNode.getPosition().add(dir.multiplyScalar(len));
+            this.pointsArray.splice(index, 0, pos);
+            index++;
+        }
+    }
 
+    changeZIndex() {
+        for (let i = 0; i < this.snakeArray.length; i++) {
+            const index = this.node.parent.children.length - i - 1;
+            this.snakeArray[i].setSiblingIndex(index);
+        }
     }
 
     update(deltaTime: number) {

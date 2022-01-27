@@ -14,10 +14,10 @@ const { ccclass, property } = _decorator;
  * ManualUrl = https://docs.cocos.com/creator/3.4/manual/zh/
  *
  */
- 
+
 @ccclass('tan_joyStick')
 export class tan_joyStick extends Component {
-    
+
     @property(Node)
     public joyStickBtn: Node;
 
@@ -28,7 +28,7 @@ export class tan_joyStick extends Component {
     public maxSpeed = 0;
 
     @property(Node)
-    public headNode:Node | null =null;
+    public headNode: Node | null = null;
 
     maxLength = 0;
     height = 0;
@@ -85,20 +85,20 @@ export class tan_joyStick extends Component {
             ;
         }
         // 虚拟摇杆移动的矩阵
-        const dir = new Vec3().add(this.dir);
-        let dis = dir.multiplyScalar(this.maxSpeed * Math.min(1, ratio));
-        const playerP = this.player.position.add(dis);
-        if (playerP.x > this.width / 2) {
-            playerP.x = this.width / 2;
-        } else if (playerP.x < - this.width / 2) {
-            playerP.x = -this.width / 2
-        }
-        if (playerP.y > this.height / 2) {
-            playerP.y = this.height / 2;
-        } else if (playerP.y < -this.height / 2) {
-            playerP.y = -this.height / 2;
-        }
-        this.player.setPosition(playerP);
+        // const dir = new Vec3().add(this.dir);
+        // let dis = dir.multiplyScalar(this.maxSpeed * Math.min(1, ratio));
+        // const playerP = this.player.position.add(dis);
+        // if (playerP.x > this.width / 2) {
+        //     playerP.x = this.width / 2;
+        // } else if (playerP.x < - this.width / 2) {
+        //     playerP.x = -this.width / 2
+        // }
+        // if (playerP.y > this.height / 2) {
+        //     playerP.y = this.height / 2;
+        // } else if (playerP.y < -this.height / 2) {
+        //     playerP.y = -this.height / 2;
+        // }
+        // this.player.setPosition(playerP);
     }
 }
 
