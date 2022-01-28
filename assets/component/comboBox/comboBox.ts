@@ -41,7 +41,6 @@ export class comboBox extends Component {
     itemArray = ['Cocos Creator', 'Cocos-2dx', 'Cocos2d-js', 'Cocos2d-Lua', 'Cocos Creator 3D', 'Cocos Service', 'Cocos社区'];
 
     start() {
-        console.log(456);
         this.dropdown.active = false;
         this.initItems();
         // [3]

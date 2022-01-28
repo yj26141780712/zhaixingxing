@@ -26,7 +26,7 @@ export class food extends Component {
     start() {
         // [3]
         const sprite = this.node.getComponent(Sprite);
-        sprite.color = sprite.color;
+        sprite.color = this.randomColor();
         const pos = this.randomPos();
         this.node.setPosition(pos);
     }

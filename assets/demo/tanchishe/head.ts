@@ -65,10 +65,16 @@ export class head extends Component {
     }
 
     onBeginContact(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
-        otherCollider.node.removeFromParent();
-        let newFood = instantiate(this.foodPrefab);
-        this.node.parent.addChild(newFood);
-        this.getNewBody();
+        // contact.disabled = true;
+        console.log(contact.disabled);
+        console.log(contact.disabledOnce)
+        contact.disabledOnce = true;
+        setTimeout(() => {
+            otherCollider.node.removeFromParent();
+            let newFood = instantiate(this.foodPrefab);
+            this.node.parent.addChild(newFood);
+            this.getNewBody();
+        })
     }
 
     randomColor() {
@@ -93,7 +99,6 @@ export class head extends Component {
         // this.node.setRotationFromEuler
         const angle = - new Vec2(pos.x, pos.y).signAngle(new Vec2(1, 0));
         const degree = angle / Math.PI * 180;
-        console.log(degree);
         this.node.setRotationFromEuler(new Vec3(0, 0, degree - 90));
     }
 
@@ -102,7 +107,6 @@ export class head extends Component {
         this.node.setPosition(this.node.getPosition().add(posV));
         this.pointsArray.push(this.node.getPosition());
         this.headPointsNum += 1;
-        console.log(this.pointsArray.length, this.headPointsNum);
         for (let i = 1; i < this.snakeArray.length; i++) {
             let num = Math.floor((this.pointsArray.length - this.headPointsNum) / (this.snakeArray.length - 1) * (this.snakeArray.length - 1 - i));
             this.snakeArray[i].setPosition(this.pointsArray[num + this.snakeArray[i].curIndex]);

@@ -30,7 +30,6 @@ export class item extends Component {
     }
 
     onClick(event: EventTouch) {
-        console.log(event.target.children[0]);
         this.comboBox.comboLabel.string = event.target.children[0]
             .getComponent(Label).string;
         this.comboBox.onClick();

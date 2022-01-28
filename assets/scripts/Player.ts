@@ -94,7 +94,6 @@ export class Play extends Component {
     }
 
     onKeyDown(event: EventKeyboard) {
-        console.log(event);
         switch (event.keyCode) {
             case macro.KEY.a:
             case macro.KEY.left:
@@ -124,7 +123,6 @@ export class Play extends Component {
 
     onTouchStart(event: EventTouch) {
         var touchLoc = event.getLocation();
-        console.log(touchLoc)
         // if (touchLoc.x >= winSize.width / 2) {
         //     this.accLeft = false;
         //     this.accRight = true;
