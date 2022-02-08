@@ -66,8 +66,6 @@ export class head extends Component {
 
     onBeginContact(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
         // contact.disabled = true;
-        console.log(contact.disabled);
-        console.log(contact.disabledOnce)
         contact.disabledOnce = true;
         setTimeout(() => {
             otherCollider.node.removeFromParent();
@@ -109,7 +107,6 @@ export class head extends Component {
         this.headPointsNum += 1;
         for (let i = 1; i < this.snakeArray.length; i++) {
             let num = Math.floor((this.pointsArray.length - this.headPointsNum) / (this.snakeArray.length - 1) * (this.snakeArray.length - 1 - i));
-            console.log(num);
             this.snakeArray[i].setPosition(this.pointsArray[num + this.snakeArray[i].curIndex]);
             (this.snakeArray[i] as any).curIndex += 1;
         }
