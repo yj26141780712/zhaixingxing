@@ -105,10 +105,11 @@ export class head extends Component {
     moveSnake() {
         const posV = new Vec3().add(this.dir).multiplyScalar(this.speed);
         this.node.setPosition(this.node.getPosition().add(posV));
-        this.pointsArray.push(this.node.getPosition());
+        this.pointsArray.push(this.node.getPosition()); // 记录蛇头移动的点
         this.headPointsNum += 1;
         for (let i = 1; i < this.snakeArray.length; i++) {
             let num = Math.floor((this.pointsArray.length - this.headPointsNum) / (this.snakeArray.length - 1) * (this.snakeArray.length - 1 - i));
+            console.log(num);
             this.snakeArray[i].setPosition(this.pointsArray[num + this.snakeArray[i].curIndex]);
             (this.snakeArray[i] as any).curIndex += 1;
         }
@@ -148,7 +149,7 @@ export class head extends Component {
             len += this.speed;
             let lastNode = this.snakeArray[this.snakeArray.length - 1];
             let lastLastNode = this.snakeArray[this.snakeArray.length - 2];
-            let dir = lastNode.getPosition().subtract(lastLastNode.getPosition()).normalize();
+            let dir = lastLastNode.getPosition().subtract(lastNode.getPosition()).normalize();
             let pos = lastNode.getPosition().add(dir.multiplyScalar(len));
             this.pointsArray.splice(index, 0, pos);
             index++;
