@@ -22,6 +22,7 @@ export class ball extends Component {
     // [2]
     // @property
     // serializableDummy = 0;
+    removeList = [];
 
     start() {
         // [3]
@@ -41,12 +42,11 @@ export class ball extends Component {
         console.log(otherCollider.node.name);
         const node = otherCollider.node;
         if (node.name === 'brick') {
+            this.node.active = false;
             const sprite = node.getComponent(Sprite);
             sprite.color = color(255, 255, 255, 0);
-            setTimeout(() => {
-                const rigidBody2D = node.getComponent(RigidBody2D);
-                rigidBody2D.destroy();
-            });
+            const rigidBody2D = node.getComponent(RigidBody2D);
+            rigidBody2D.destroy();
         }
     }
 
