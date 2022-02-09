@@ -1,5 +1,5 @@
 
-import { _decorator, Component, Node, SystemEvent, EventTouch, UITransform, Vec3, Sprite, color, tween } from 'cc';
+import { _decorator, Component, Node, SystemEvent, EventTouch, UITransform, Vec3, Sprite, color, tween, Color } from 'cc';
 const { ccclass, property } = _decorator;
 
 /**
@@ -29,22 +29,22 @@ export class revolvePageView extends Component {
     // @property
     // serializableDummy = 0;
     cardAttrArray: Card[] = [];
-    revolveTime = 2;
+    revolveTime = 0.8;
     nodes: Node[] = [];
     start() {
         this.nodes = [].concat(this.node.children);
         this.cardAttrArray = [{
-            zIndex: 3,
+            zIndex: 5,
             scale: 1,
             opacity: 255,
             pos: this.node.children[0].getPosition()
         }, {
-            zIndex: 2,
+            zIndex: 4,
             scale: 0.8,
             opacity: 180,
             pos: this.node.children[1].getPosition()
         }, {
-            zIndex: 1,
+            zIndex: 3,
             scale: 0.5,
             opacity: 100,
             pos: this.node.children[2].getPosition()
@@ -76,8 +76,11 @@ export class revolvePageView extends Component {
     }
 
     onTouchMove(event: EventTouch) {
+        console.log(123);
         for (let i = 0; i < this.nodes.length - 1; i++) {
-
+            if (this.nodes[i]['isTween']) {
+                return;
+            }
         }
         const delta = event.getDelta();
         if (delta.x > this.node.parent.getComponent(UITransform).width / 40) {
@@ -88,40 +91,48 @@ export class revolvePageView extends Component {
     }
 
     revolveToLeft() {
-        // this.node.children.forEach((node: Node, index: number) => {
-        //     const num = node['num'];
-        //     if (num < this.cardAttrArray.length - 1) {
-        //         node.attr({ num: num + 1 });
-        //     } else {
-        //         node.attr({ num: 0 });
-        //     }
-        //     const newCardAttr = this.cardAttrArray[node['num']];
-        //     tween(node).to(this.revolveTime, {
-        //         position: newCardAttr.pos,
-        //         scale: new Vec3(1, 1, 1).multiplyScalar(newCardAttr.scale)
-        //     })
-        // })
+        this.nodes.forEach((node: Node) => {
+            const num = node['num'];
+            if (num > 0) {
+                node.attr({ num: num - 1 });
+            } else {
+                node.attr({ num: this.cardAttrArray.length - 1 });
+            }
+            this.revolve(node);
+        })
     }
 
     revolveToRight() {
-        this.nodes.forEach((node: Node, index: number) => {
+        this.nodes.forEach((node: Node) => {
             const num = node['num'];
             if (num < this.cardAttrArray.length - 1) {
                 node.attr({ num: num + 1 });
             } else {
                 node.attr({ num: 0 });
             }
-            const newCardAttr = this.cardAttrArray[node['num']];
-            node['isTween'] = true;
-            tween(node).to(this.revolveTime, {
-                position: newCardAttr.pos,
-                scale: new Vec3(1, 1, 1).multiplyScalar(newCardAttr.scale),
-            }, {
-                onComplete: () => {
-                    node['isTween'] = false;
-                }
-            }).start();
+            this.revolve(node);
         })
+    }
+
+    revolve(node: Node) {
+        const newCardAttr = this.cardAttrArray[node['num']];
+        node['isTween'] = true;
+        node.setSiblingIndex(newCardAttr.zIndex);
+        const sprite = node.getComponent(Sprite);
+        const opacity = sprite.color.a;
+        tween(node).to(this.revolveTime, {
+            position: newCardAttr.pos,
+            scale: new Vec3(1, 1, 1).multiplyScalar(newCardAttr.scale),
+
+        }, {
+            onUpdate: (target, ratio: number) => {
+                sprite.color = color(255, 255, 255, (newCardAttr.opacity - opacity) * ratio + opacity);
+            },
+            onComplete: () => {
+                sprite.color = color(255, 255, 255, newCardAttr.opacity);
+                node['isTween'] = false;
+            }
+        }).start();
     }
 
     onDestroy() {
