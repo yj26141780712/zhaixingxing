@@ -40,11 +40,12 @@ export class zoom extends Component {
         const touches = event.getTouches();
         console.log(touches.length);
         if (touches.length === 1) { // 一根手指
-
+            let delta = event.getDelta();
+            this.imgNode.setPosition(this.imgNode.getPosition().add(new Vec3(delta.x, delta.y, 0)));
+            this.restrictPic();
         } else if (touches.length === 2) { // 两根手指
             const ui = this.node.getComponent(UITransform);
             const startLocation1 = touches[0].getLocation();
-
             const startPosition1 = ui.convertToNodeSpaceAR(new Vec3(startLocation1.x, startLocation1.y, 0));
             console.log('手指1', startPosition1)
             const startLocation2 = touches[1].getLocation();
@@ -52,6 +53,7 @@ export class zoom extends Component {
             console.log('手指2', startPosition2)
             this.startLength = startPosition2.subtract(startPosition1).length();
             console.log(this.startLength);
+            this.restrictPic();
         }
     }
 
@@ -93,6 +95,29 @@ export class zoom extends Component {
     onDestroy() {
         this.node.off(SystemEvent.EventType.TOUCH_START, this.onTouchStart, this);
         this.node.off(SystemEvent.EventType.TOUCH_MOVE, this.onTouchMove, this);
+    }
+
+    restrictPic() {
+        let imgHeight = this.imgNode.getComponent(UITransform).getBoundingBox().height;
+        let imgWidth = this.imgNode.getComponent(UITransform).getBoundingBox().width;
+        let maskHeight = this.maskNode.getComponent(UITransform).getBoundingBox().height;
+        let maskWidth = this.maskNode.getComponent(UITransform).getBoundingBox().width;
+        let pos = this.imgNode.getPosition();
+        let x = pos.x;
+        let y = pos.y;
+        if (pos.x > 0 && pos.x > imgWidth / 2 - maskWidth / 2) {
+            x = imgWidth / 2 - maskWidth / 2;
+        }
+        if (pos.x < 0 && pos.x < maskWidth / 2 - imgWidth / 2) {
+            x = maskWidth / 2 - imgWidth / 2;
+        }
+        if (pos.y > 0 && pos.y > imgHeight / 2 - maskHeight / 2) {
+            y = imgHeight / 2 - maskHeight / 2;
+        }
+        if (pos.y < 0 && pos.y < maskHeight / 2 - imgHeight / 2) {
+            y = maskHeight / 2 - imgHeight / 2;
+        }
+        this.imgNode.setPosition(new Vec3(x, y, 0));
     }
     // update (deltaTime: number) {
     //     // [4]
