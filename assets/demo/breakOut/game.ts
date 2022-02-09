@@ -1,5 +1,5 @@
 
-import { _decorator, Component, Node, instantiate, Prefab } from 'cc';
+import { _decorator, Component, Node, instantiate, Prefab, Layout, math, director } from 'cc';
 const { ccclass, property } = _decorator;
 
 /**
@@ -30,8 +30,15 @@ export class game extends Component {
     @property()
     public row = 9;
 
+    @property(Node)
+    public bricksLayout: Node = null;
+
+
+
     start() {
         // [3]
+        const layout = this.bricksLayout.getComponent(Layout);
+        layout.cellSize = math.size(100, 50);
         this.initLayout();
     }
 
@@ -39,6 +46,8 @@ export class game extends Component {
         for (let i = 0; i < this.row; i++) {
             for (let j = 0; j < this.col; j++) {
                 const node = instantiate(this.brickPrefab);
+
+                this.bricksLayout.addChild(node);
             }
         }
     }
