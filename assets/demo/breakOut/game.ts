@@ -97,7 +97,7 @@ export class game extends Component {
         if (this.moveDir === 'left') {
             this.bar.setPosition(this.bar.getPosition().add(new Vec3(-this.speed, 0, 0)));
         } else if (this.moveDir === 'right') {
-            this.bar.setPosition(this.bar.getPosition().add(new Vec3(+this.speed, 0, 0)));
+            this.bar.setPosition(this.bar.getPosition().add(new Vec3(this.speed, 0, 0)));
         }
     }
 

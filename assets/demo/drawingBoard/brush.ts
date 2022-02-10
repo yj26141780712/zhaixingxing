@@ -1,5 +1,5 @@
 
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Node, Graphics, Color } from 'cc';
 const { ccclass, property } = _decorator;
 
 /**
@@ -13,7 +13,7 @@ const { ccclass, property } = _decorator;
  * ManualUrl = https://docs.cocos.com/creator/3.4/manual/zh/
  *
  */
- 
+
 @ccclass('brush')
 export class brush extends Component {
     // [1]
@@ -22,14 +22,31 @@ export class brush extends Component {
     // [2]
     // @property
     // serializableDummy = 0;
-
-    start () {
+    ctx: Graphics;
+    start() {
         // [3]
+        this.ctx = this.node.getComponent(Graphics);
     }
 
-    // update (deltaTime: number) {
-    //     // [4]
-    // }
+    setStartPos(x: number, y: number) {
+        console.log(x, y);
+        this.ctx.moveTo(x, y);
+    }
+
+    setWidth(lineWidth: number) {
+        this.ctx.lineWidth = lineWidth;
+    }
+
+    setColor(color: Color) {
+        this.ctx.color = color;
+    }
+
+    moveTo(x: number, y: number) {
+        console.log(x, y);
+        this.ctx.lineTo(x, y);
+        this.ctx.stroke();
+        this.ctx.moveTo(x, y);
+    }
 }
 
 /**

@@ -1,5 +1,8 @@
 
-import { _decorator, Component, Node, Slider, Prefab } from 'cc';
+import { _decorator, Component, Node, Slider, Prefab, instantiate, Sprite, color, Layout, UITransform, UI, setDisplayStats, resources, SpriteFrame, systemEvent, SystemEvent, EventTouch, Vec3 } from 'cc';
+import { colors, tools, ColorSetting, ToolSetting } from './settings';
+import { color as colorI } from './color';
+import { brush } from './brush';
 const { ccclass, property } = _decorator;
 
 /**
@@ -28,28 +31,78 @@ export class draw extends Component {
     @property(Prefab)
     public toolPrefab: Prefab = null;
 
+    @property(Node)
+    public colorsLayout: Node = null;
+
+    @property(Node)
+    public toolsLayout: Node = null;
+
+    @property(Node)
+    public brushNode: Node = null;
+
     tool: string;
-
+    brushIns: brush;
     start() {
-
+        this.brushIns = this.brushNode.getComponent(brush);
+        setDisplayStats(false);
+        this.initColors();
+        this.initTools();
+        this.initTouchEvent();
     }
 
     initColors() {
-
+        let colorHeight = 0;
+        colors.forEach(setting => {
+            const node = instantiate(this.colorPrefab);
+            const sprire = node.getComponent(Sprite);
+            colorHeight += node.getComponent(UITransform).height;
+            sprire.color = color(setting.r, setting.g, setting.b, setting.active ? 255 : 100);
+            this.colorsLayout.addChild(node);
+        });
+        const layout = this.colorsLayout.getComponent(Layout);
+        const ui = this.colorsLayout.getComponent(UITransform);
+        ui.height = layout.paddingBottom + layout.paddingTop +
+            layout.spacingY * (colors.length - 1) + colorHeight;
     }
 
     initTools() {
+        let toolHeight = 0;
+        tools.forEach((setting) => {
+            const node = instantiate(this.toolPrefab);
+            toolHeight += node.getComponent(UITransform).height;
+            const sprite = node.getComponent(Sprite);
+            sprite.color = color(255, 255, 255, setting.active ? 255 : 100);
+            resources.load(`texture/${setting.name}/spriteFrame`, SpriteFrame, (err, spriteFrame) => {
+                sprite.spriteFrame = spriteFrame;
+            });
+            this.toolsLayout.addChild(node);
+        });
+        const layout = this.toolsLayout.getComponent(Layout);
+        const ui = this.toolsLayout.getComponent(UITransform);
+        ui.height = layout.paddingBottom + layout.paddingTop +
+            layout.spacingY * (tools.length - 1) + toolHeight;
+    }
 
+    initTouchEvent() {
+        this.node.on(SystemEvent.EventType.TOUCH_START, this.onTouchStart, this);
+        this.node.on(SystemEvent.EventType.TOUCH_MOVE, this.onTouchMove, this);
     }
 
     onSildeEvent(event: Slider, customEventData: string) {
-        // 1+ *5
-        console.log(event.progress);
-        console.log(customEventData);
+        this.brushIns.ctx.lineWidth = 1 + event.progress * 5;
     }
-    // update (deltaTime: number) {
-    //     // [4]
-    // }
+
+    onTouchStart(event: EventTouch) {
+        const location = event.getUILocation();
+        const positon = this.node.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(location.x, location.y, 0));
+        this.brushIns.setStartPos(positon.x, positon.y);
+    }
+
+    onTouchMove(event: EventTouch) {
+        const location = event.getUILocation();
+        const positon = this.node.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(location.x, location.y, 0));
+        this.brushIns.moveTo(positon.x, positon.y);
+    }
 }
 
 /**
