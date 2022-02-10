@@ -1,5 +1,5 @@
 
-import { _decorator, Component, RigidBody2D, Collider2D, Contact2DType, IPhysics2DContact, PolygonCollider2D, Sprite, color } from 'cc';
+import { _decorator, Component, RigidBody2D, Collider2D, Contact2DType, IPhysics2DContact, Sprite, color, Node, AudioSource, AudioClip } from 'cc';
 const { ccclass, property } = _decorator;
 
 /**
@@ -22,7 +22,11 @@ export class ball extends Component {
     // [2]
     // @property
     // serializableDummy = 0;
-    removeList = [];
+    @property(AudioSource)
+    public audioSource: AudioSource = null;
+
+    @property(AudioClip)
+    public clips: AudioClip[] = [];
 
     start() {
         // [3]
@@ -32,7 +36,7 @@ export class ball extends Component {
         //     = new Vec2(Math.random() * -12, 10)
         let collider = this.getComponent(Collider2D);
         if (collider) {
-            collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
+            collider.on(Contact2DType.POST_SOLVE, this.onBeginContact, this);
         }
     }
 
@@ -42,17 +46,22 @@ export class ball extends Component {
         console.log(otherCollider.node.name);
         const node = otherCollider.node;
         if (node.name === 'brick') {
-            this.node.active = false;
-            const sprite = node.getComponent(Sprite);
-            sprite.color = color(255, 255, 255, 0);
-            const rigidBody2D = node.getComponent(RigidBody2D);
-            rigidBody2D.destroy();
+            // 播放消除砖块声音
+            this.audioSource.playOneShot(this.clips[1]);
+            this.scheduleOnce(() => { //碰撞节点销毁必须在下一帧以后才能执行
+                const sprite = node.getComponent(Sprite);
+                sprite.color = color(255, 255, 255, 0);
+                const rigidBody2D = node.getComponent(RigidBody2D);
+                rigidBody2D.destroy();
+            }, 0)
+        } else {
+            // 播放碰墙声音
+            this.audioSource.playOneShot(this.clips[0]);
         }
     }
 
-    // update (deltaTime: number) {
-    //     // [4]
-    // }
+    update(deltaTime: number) {
+    }
 }
 
 /**
