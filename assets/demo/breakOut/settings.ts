@@ -1,4 +1,15 @@
-const settings = [
+export interface LevelSetting {
+    level: number;
+    row: number;
+    col: number;
+    spaceX: number;
+    spaceY: number;
+    brickWidth: number;
+    brickHeight: number;
+    state: 'UNLOCKED' | 'LOCKED' | 'PASSED';
+}
+
+const settings: LevelSetting[] = [
     {
         level: 1,
         row: 4,
@@ -7,7 +18,7 @@ const settings = [
         spaceY: 20,
         brickWidth: 200,
         brickHeight: 100,
-        state: 'UNLOCKED'
+        state: 'PASSED'
     },
     {
         level: 2,
@@ -27,7 +38,7 @@ const settings = [
         spaceY: 20,
         brickWidth: 200,
         brickHeight: 100,
-        state: 'UNLOCKED'
+        state: 'LOCKED'
     },
     {
         level: 4,
@@ -37,7 +48,7 @@ const settings = [
         spaceY: 20,
         brickWidth: 200,
         brickHeight: 100,
-        state: 'UNLOCKED'
+        state: 'LOCKED'
     },
     {
         level: 5,
@@ -47,7 +58,7 @@ const settings = [
         spaceY: 20,
         brickWidth: 200,
         brickHeight: 100,
-        state: 'UNLOCKED'
+        state: 'LOCKED'
     },
     {
         level: 6,                   // 第6关
@@ -57,7 +68,7 @@ const settings = [
         spaceY: 4,
         brickWidth: 60,
         brickHeight: 30,
-        levelState: 'LOCKED',
+        state: 'LOCKED',
     }
 ]
 
