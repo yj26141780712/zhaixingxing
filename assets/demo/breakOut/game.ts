@@ -1,5 +1,5 @@
 
-import { _decorator, Component, Node, instantiate, Prefab, Layout, math, director } from 'cc';
+import { _decorator, Component, Node, instantiate, Prefab, Layout, math, director, systemEvent, SystemEvent, SystemEventType, sys, EventKeyboard, macro, TERRAIN_HEIGHT_BASE, Vec3 } from 'cc';
 const { ccclass, property } = _decorator;
 
 /**
@@ -33,28 +33,74 @@ export class game extends Component {
     @property(Node)
     public bricksLayout: Node = null;
 
+    @property(Node)
+    public bar: Node = null;
 
+    moveDir = '';
+
+    @property()
+    public speed = 20;
 
     start() {
         // [3]
         const layout = this.bricksLayout.getComponent(Layout);
         layout.cellSize = math.size(100, 50);
         this.initLayout();
+        this.onKeyEvent();
     }
 
     initLayout() {
         for (let i = 0; i < this.row; i++) {
             for (let j = 0; j < this.col; j++) {
                 const node = instantiate(this.brickPrefab);
-
                 this.bricksLayout.addChild(node);
             }
         }
     }
 
-    // update (deltaTime: number) {
-    //     // [4]
-    // }
+    onKeyEvent() {
+        systemEvent.on(SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+        systemEvent.on(SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+    }
+
+    onKeyDown(event: EventKeyboard) {
+        console.log(event.keyCode);
+        switch (event.keyCode) {
+            case macro.KEY.a:
+            case macro.KEY.left:
+                this.moveDir = 'left';
+                break;
+            case macro.KEY.d:
+            case macro.KEY.right:
+                this.moveDir = 'right';
+                break;
+        }
+        console.log(this.moveDir);
+    }
+
+    onKeyUp(event: EventKeyboard) {
+        console.log()
+        this.moveDir = '';
+    }
+
+    offKeyEvent() {
+        systemEvent.off(SystemEvent.EventType.KEY_DOWN,)
+    }
+
+    onDestroy() {
+        this.offKeyEvent();
+    }
+
+
+    update(deltaTime: number) {
+        //更新bar位置
+        if (this.moveDir === 'left') {
+            this.bar.setPosition(this.bar.getPosition().add(new Vec3(-this.speed, 0, 0)));
+        } else if (this.moveDir === 'right') {
+            this.bar.setPosition(this.bar.getPosition().add(new Vec3(+this.speed, 0, 0)));
+        }
+    }
+
 }
 
 /**

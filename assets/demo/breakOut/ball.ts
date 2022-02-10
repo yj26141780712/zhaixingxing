@@ -1,5 +1,5 @@
 
-import { _decorator, Component, RigidBody2D, Collider2D, Contact2DType, IPhysics2DContact, Sprite, color, Node, AudioSource, AudioClip } from 'cc';
+import { _decorator, Component, RigidBody2D, Collider2D, Contact2DType, IPhysics2DContact, Sprite, color, Node, AudioSource, AudioClip, Vec2 } from 'cc';
 const { ccclass, property } = _decorator;
 
 /**
@@ -31,9 +31,8 @@ export class ball extends Component {
     start() {
         // [3]
         // 球方向随机
-        // console.log(123);
-        // this.node.getComponent(RigidBody2D).linearVelocity
-        //     = new Vec2(Math.random() * -12, 10)
+        this.node.getComponent(RigidBody2D).linearVelocity
+            = new Vec2(Math.random() * -30, 30)
         let collider = this.getComponent(Collider2D);
         if (collider) {
             collider.on(Contact2DType.POST_SOLVE, this.onBeginContact, this);
@@ -52,7 +51,9 @@ export class ball extends Component {
                 const sprite = node.getComponent(Sprite);
                 sprite.color = color(255, 255, 255, 0);
                 const rigidBody2D = node.getComponent(RigidBody2D);
-                rigidBody2D.destroy();
+                if (rigidBody2D) {
+                    rigidBody2D.destroy();
+                }
             }, 0)
         } else {
             // 播放碰墙声音
@@ -61,6 +62,7 @@ export class ball extends Component {
     }
 
     update(deltaTime: number) {
+        // console.log(this.node.getComponent(RigidBody2D).linearVelocity);
     }
 }
 
